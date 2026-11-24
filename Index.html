@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Second Stopwatch</title>
+</head>
+<body>
+  <p><strong id="seconds" aria-live="polite">0</strong></p>
+  <button id="start" type="button">Start</button>
+  <button id="stop" type="button">Stop</button>
+  <button id="reset" type="button">Reset</button>
+
+  <script>
+    const secondsDisplay = document.getElementById("seconds");
+    let elapsedMilliseconds = 0;
+    let startedAt = null;
+    let timerId = null;
+
+    function updateDisplay() {
+      const currentElapsed = elapsedMilliseconds + (startedAt === null ? 0 : Date.now() - startedAt);
+      secondsDisplay.textContent = Math.floor(currentElapsed / 1000);
+    }
+
+    document.getElementById("start").addEventListener("click", () => {
+      if (timerId !== null) return;
+
+      startedAt = Date.now();
+      timerId = window.setInterval(updateDisplay, 100);
+    });
+
+    document.getElementById("stop").addEventListener("click", () => {
+      if (timerId === null) return;
+
+      elapsedMilliseconds += Date.now() - startedAt;
+      startedAt = null;
+      window.clearInterval(timerId);
+      timerId = null;
+      updateDisplay();
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      if (timerId !== null) {
+        window.clearInterval(timerId);
+        timerId = null;
+      }
+
+      elapsedMilliseconds = 0;
+      startedAt = null;
+      updateDisplay();
+    });
+  </script>
+</body>
+</html>
